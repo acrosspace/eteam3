@@ -13,22 +13,30 @@ document.addEventListener("DOMContentLoaded", () => {
   renderer.setSize(width, height);
   document.body.appendChild(renderer.domElement);
 
-  camera.position.set(0, 5, 5);
+  camera.position.set(0, 15, 15);
   camera.lookAt(0, 0, 0);
 
-  const girdSize = 10;
-  const gridDivisions = 10;
+  const girdSize = 25;
+  const gridDivisions = 25;
   const gridHelper = new THREE.GridHelper(girdSize, gridDivisions);
   scene.add(gridHelper);
 
   const controls = new OrbitControls(camera, renderer.domElement);
 
   var geometry1 = new THREE.BoxGeometry(1, 1, 1);
-  var material1 = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+  var material1 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
   var cube1 = new THREE.Mesh(geometry1, material1);
   scene.add(cube1);
 
-  // Coins
+  var geometry2 = new THREE.SphereGeometry(1, 10, 10);
+  var meterial2 = new THREE.MeshBasicMaterial({
+    color: 0x00ff00,
+    wireframe: true,
+  });
+  var sphere1 = new THREE.Mesh(geometry2, meterial2);
+  scene.add(sphere1);
+
+  // Coins8
   const coinGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.1, 100);
   const coinMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 
@@ -61,7 +69,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function animate() {
     requestAnimationFrame(animate);
 
-    //cube1.rotation.x += 0.01;
+    sphere1.rotation.x += 0.01;
+    sphere1.rotation.y += 0.01;
 
     // Collision detection
     const playerBox = new THREE.Box3().setFromObject(cube1);
