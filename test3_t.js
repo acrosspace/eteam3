@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
+  cube.position.y = 10;
 
   var geometry2 = new THREE.SphereGeometry(1, 10, 10);
   var meterial2 = new THREE.MeshBasicMaterial({
@@ -113,7 +114,8 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case " ":
         if (isOnGround) {
-          velocity.y = JUMP_VELOCITY;
+          //velocity.y = JUMP_VELOCITY;
+          cube.position.y = 5;
           isOnGround = false;
         }
         break;
@@ -139,11 +141,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Update player position with velocity
-    player.position.y += velocity.y * 0.01; // Note: Scaling factor for consistent frame rates
+    cube.position.y += velocity.y * 0.01; // Note: Scaling factor for consistent frame rates
 
     // Check if player is on the ground
-    if (player.position.y <= 1) {
-      player.position.y = 1;
+    if (cube.position.y <= 0) {
+      cube.position.y = 0;
       velocity.y = 0;
       isOnGround = true;
     }
