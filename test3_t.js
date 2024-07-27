@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
+
   cube.position.y = 10;
 
   var geometry2 = new THREE.SphereGeometry(1, 10, 10);
