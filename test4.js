@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("hello");
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log(hello);
 
-  var fps = 1; // frame per second
+  var fps = 60; // frame per second
 
   class PhysicsEngine {
     gravity = -9.8; // 초당 속도의 변화량
@@ -56,12 +57,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const controls = new OrbitControls(camera, renderer.domElement);
 
+  var model;
+  var mixer;
+  const loader = new GLTFLoader();
+  loader.load("./Demon.glb", (gltf) => {
+    model = gltf.scene;
+    scene.add(model);
+
+    if (gltf.animations.length > 0) {
+      console.log("animation", gltf.animations);
+      mixer = new THREE.AnimationMixer(model);
+      const action = mixer.clipAction(gltf.animations[0]);
+      action.play();
+    }
+  });
+
+  var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+  directionalLight.position.set(0, 10, 0);
+  // direction to (0, 0, 0)
+  directionalLight.target.position.set(0, 0, 0);
+  scene.add(directionalLight);
+
+  var ambientLight = new THREE.AmbientLight(0xffffff, 1);
+  scene.add(ambientLight);
+
   setInterval(() => {
     myPhysicsEngine.test();
 
     console.log(cube.position.y);
 
     cube.position.y += myPhysicsEngine.speed / fps;
+
+    // const delta = clock.getDelta();
+
+    if (model) {
+      mixer.update(1 / fps);
+    }
 
     // render
     renderer.render(scene, camera);
