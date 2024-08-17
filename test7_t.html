@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Box Movement</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #coin-count {
+            position: absolute;
+            top: 0;
+            color: white;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 1.5em;
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div id="coin-count">coins:</div> -->
+
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../../three/three.module.js",
+          "three/addons/": "../../../three/jsm/"
+        }
+      }
+  </script>
+
+    <script src="./test7_t.js" type="module"></script>
+</body>
+
+</html>
