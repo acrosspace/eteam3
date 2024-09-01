@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log(hello);
 
-  var fps = 1; // frame per second
+  var fps = 60; // frame per second
 
   class PhysicsEngine {
     gravity = -9.8; // 초당 속도의 변화량
