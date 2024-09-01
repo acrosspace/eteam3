@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   var fps = 60; // frame per second
 
+  var direction = "";
+  var turn = "";
+  var speed = 0.01;
+
   class PhysicsEngine {
     gravity = -9.8; // 초당 속도의 변화량
     speed = 0;
@@ -54,6 +58,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const ambientLight = new THREE.AmbientLight(0xffffff, 5);
   scene.add(ambientLight);
 
+  window.addEventListener("keydown", (event) => {
+    console.log(event.key);
+
+    if (event.key === "ArrowUp") {
+      direction = "forward";
+    } else if (event.key === "ArrowDown") {
+      direction = "backward";
+    }
+
+    if (event.key === "ArrowLeft") {
+      turn = "left";
+      console.log(turn);
+    } else if (event.key === "ArrowRight") {
+      turn = "right";
+    }
+
+    if (event.key === "Shift") {
+      speed = 0.1;
+    }
+  });
+
+  window.addEventListener("keyup", (event) => {
+    turn = "";
+
+    if (event.key == "ArrowUp" || event.key == "ArrowDown") {
+      direction = "";
+    }
+
+    const action = mixer.clipAction(gltf.animations[10]);
+    action.play();
+  });
+
   let model;
   let mixer;
   const loader = new GLTFLoader();
@@ -87,7 +123,21 @@ document.addEventListener("DOMContentLoaded", () => {
     myPhysicsEngine.test();
 
     if (model) {
-      console.log(model.position.y);
+      if (direction == "forward") {
+        //model.position.z += 0.01;
+        model.translateZ(speed);
+      } else if (direction == "backward") {
+        //model.position.z -= 0.01;
+        model.translateZ(-speed);
+      }
+
+      if (turn == "left") {
+        model.rotation.y += speed;
+      } else if (turn == "right") {
+        model.rotation.y -= speed;
+      }
+
+      //console.log(model.position.y);
 
       //model.position.y += myPhysicsEngine.speed / fps;
 

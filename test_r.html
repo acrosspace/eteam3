@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js and Rapier.js Example</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="module">
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.module.js';
+        import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/loaders/GLTFLoader.js';
+        import * as RAPIER from 'https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-compat/rapier3d.js';
+
+        // Setup the scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Setup lights
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(10, 10, 10).normalize();
+        scene.add(light);
+
+        // Initialize Rapier physics world
+        let rapierWorld;
+        RAPIER.init().then(() => {
+            rapierWorld = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
+
+            // Load a GLB model
+            const loader = new GLTFLoader();
+            loader.load('path_to_your_model.glb', (gltf) => {
+                const model = gltf.scene;
+                scene.add(model);
+
+                // Add Rapier physics for the model
+                const mesh = model.children[0]; // Assuming the model has only one mesh
+                const shape = new RAPIER.Cuboid(mesh.scale.x / 2, mesh.scale.y / 2, mesh.scale.z / 2);
+                const bodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(mesh.position.x, mesh.position.y, mesh.position.z);
+                const rigidBody = rapierWorld.createRigidBody(bodyDesc);
+                rapierWorld.createCollider(shape, rigidBody);
+
+                // Animate and update physics
+                function animate() {
+                    requestAnimationFrame(animate);
+
+                    rapierWorld.step();
+
+                    // Update Three.js mesh position and rotation with Rapier physics body
+                    const position = rigidBody.translation();
+                    const rotation = rigidBody.rotation();
+                    mesh.position.set(position.x, position.y, position.z);
+                    mesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+
+                    renderer.render(scene, camera);
+                }
+                animate();
+            });
+        });
+
+        // Set camera position
+        camera.position.z = 5;
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+
+</html>
